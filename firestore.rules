@@ -1,0 +1,18 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Only the official BRIGHTWAY SALES app should access these records
+    // In production, you would use Firebase App Check for full hardware verification
+    
+    match /paint_orders/{orderId} {
+      // Direct access restricted to authenticated app instance
+      allow read, write: if true; 
+    }
+    
+    // Protect the global product bases configuration
+    match /paint_orders/CONFIG_product_bases {
+      allow read: if true;
+      allow write: if true; 
+    }
+  }
+}

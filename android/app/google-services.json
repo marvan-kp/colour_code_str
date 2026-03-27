@@ -1,0 +1,49 @@
+{
+  "project_info": {
+    "project_number": "856942736062",
+    "firebase_url": "https://paintshop-879ec-default-rtdb.firebaseio.com",
+    "project_id": "paintshop-879ec",
+    "storage_bucket": "paintshop-879ec.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:856942736062:android:0205315c7d4c9b78fd64ef",
+        "android_client_info": {
+          "package_name": "com.paintshop.pos"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCIs7oInGjkFXKR3tZwr0cl1h70AhaWgOk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:856942736062:android:15aaed6a134d2675fd64ef",
+        "android_client_info": {
+          "package_name": "com.paintshop.pos.colour_cost"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCIs7oInGjkFXKR3tZwr0cl1h70AhaWgOk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
