@@ -8,6 +8,7 @@ import '../providers/order_provider.dart';
 import '../services/connectivity_service.dart';
 import '../widgets/glass_container.dart';
 import '../services/biometric_service.dart';
+import '../widgets/smooth_route.dart';
 import 'add_order_screen.dart';
 
 class OrderListScreen extends StatelessWidget {
@@ -61,7 +62,7 @@ class OrderListScreen extends StatelessWidget {
         ),
         child: FloatingActionButton.extended(
           onPressed: () => Navigator.push(
-            context, MaterialPageRoute(builder: (_) => const AddOrderScreen())),
+            context, SmoothPageRoute(child: const AddOrderScreen())),
           backgroundColor: Colors.cyanAccent,
           foregroundColor: Colors.black,
           icon: const Icon(Icons.add_rounded, weight: 700),

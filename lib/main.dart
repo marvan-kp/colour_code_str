@@ -104,6 +104,12 @@ class PaintShopApp extends StatelessWidget {
           labelStyle: const TextStyle(color: Colors.white54),
           hintStyle: TextStyle(color: Colors.white.withOpacity(0.25)),
         ),
+        pageTransitionsTheme: const PageTransitionsTheme(
+          builders: {
+            TargetPlatform.android: ZoomPageTransitionsBuilder(),
+            TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+          },
+        ),
       ),
       home: const PinLockScreen(
         child: Scaffold(
