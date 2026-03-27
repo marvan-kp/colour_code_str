@@ -9,9 +9,13 @@ class SyncService {
   final ConnectivityService _connectivity;
 
   final _syncStatusController = StreamController<bool>.broadcast();
+  final _detailedStatusController = StreamController<SyncMetrics>.broadcast();
+  
   Stream<bool> get syncStatusStream => _syncStatusController.stream;
+  Stream<SyncMetrics> get detailedStatusStream => _detailedStatusController.stream;
 
   bool _isSyncing = false;
+  SyncMetrics _currentMetrics = SyncMetrics();
 
   SyncService(this._localDb, this._firestore, this._connectivity) {
     _connectivity.statusStream.listen((status) {
@@ -23,24 +27,33 @@ class SyncService {
     Future.delayed(const Duration(seconds: 2), syncData);
   }
 
+  void _updateMetrics(SyncMetrics Function(SyncMetrics) update) {
+    _currentMetrics = update(_currentMetrics);
+    _detailedStatusController.add(_currentMetrics);
+  }
+
   bool _syncRequested = false;
 
-  Future<void> syncData() async {
+  Future<void> syncData({bool isFullSync = false, String? deviceId}) async {
     if (_isSyncing) {
       _syncRequested = true;
       return;
     }
     _isSyncing = true;
     _syncStatusController.add(true);
+    _updateMetrics((m) => m.copyWith(isSyncing: true, lastError: null));
 
     try {
-      // Upload unsynced local orders to Firestore
       final unsynced = _localDb.getUnsyncedOrders();
+      _updateMetrics((m) => m.copyWith(unsyncedCount: unsynced.isNotEmpty ? unsynced.length : 0));
+
+      // Upload unsynced local orders to Firestore
       if (unsynced.isNotEmpty) {
         await _firestore.uploadOrdersBatch(unsynced);
         for (final order in unsynced) {
           await _localDb.markAsSynced(order.id);
         }
+        _updateMetrics((m) => m.copyWith(unsyncedCount: 0));
       }
 
       // Sync deletions to Firestore
@@ -50,23 +63,20 @@ class SyncService {
         await _localDb.clearDeletedOrderId(id);
       }
 
-      // Pull remote changes from last 7 days
-      final since = DateTime.now().subtract(const Duration(days: 7));
+      // Pull remote changes
+      // Full sync goes back 30 days, normal sync 7 days
+      final since = DateTime.now().subtract(Duration(days: isFullSync ? 30 : 7));
       final remoteOrders = await _firestore.fetchLatestOrders(since);
 
       if (remoteOrders.isNotEmpty) {
-        // PERF: Fetch local orders once and use a Map for O(1) matching
         final locals = _localDb.getAllOrders();
         final localMap = {for (var o in locals) o.id: o};
 
         for (final remote in remoteOrders) {
           final local = localMap[remote.id];
-
           if (local == null) {
-            // New order from another device
             await _localDb.saveOrder(remote..isSynced = true);
           } else if (remote.updatedAt.isAfter(local.updatedAt)) {
-            // Remote is newer: update local
             await _localDb.saveOrder(remote..isSynced = true);
           }
         }
@@ -83,20 +93,60 @@ class SyncService {
           await _localDb.updateProductBases(parsed, timestamp: remoteUpdatedAt);
         }
       );
+
+      // Heartbeat
+      if (deviceId != null) {
+        await _firestore.updateDeviceStatus(deviceId, {
+          'lastSync': DateTime.now().toIso8601String(),
+          'orderCount': _localDb.getAllOrders().length,
+        });
+      }
+
+      _updateMetrics((m) => m.copyWith(lastSyncTime: DateTime.now()));
     } catch (e) {
-      // Silently fail — data is safe locally
+      _updateMetrics((m) => m.copyWith(lastError: e.toString()));
     } finally {
       _isSyncing = false;
       _syncStatusController.add(false);
+      _updateMetrics((m) => m.copyWith(isSyncing: false));
       
       if (_syncRequested) {
         _syncRequested = false;
-        syncData();
+        syncData(isFullSync: isFullSync, deviceId: deviceId);
       }
     }
   }
 
   void dispose() {
     _syncStatusController.close();
+    _detailedStatusController.close();
+  }
+}
+
+class SyncMetrics {
+  final DateTime? lastSyncTime;
+  final int unsyncedCount;
+  final bool isSyncing;
+  final String? lastError;
+
+  SyncMetrics({
+    this.lastSyncTime,
+    this.unsyncedCount = 0,
+    this.isSyncing = false,
+    this.lastError,
+  });
+
+  SyncMetrics copyWith({
+    DateTime? lastSyncTime,
+    int? unsyncedCount,
+    bool? isSyncing,
+    String? lastError,
+  }) {
+    return SyncMetrics(
+      lastSyncTime: lastSyncTime ?? this.lastSyncTime,
+      unsyncedCount: unsyncedCount ?? this.unsyncedCount,
+      isSyncing: isSyncing ?? this.isSyncing,
+      lastError: lastError ?? this.lastError,
+    );
   }
 }

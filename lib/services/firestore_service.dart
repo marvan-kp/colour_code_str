@@ -78,4 +78,29 @@ class FirestoreService {
       });
     } catch (_) {}
   }
+
+  Future<void> updateDeviceStatus(String deviceId, Map<String, dynamic> status) async {
+    final db = _db;
+    if (db == null) return;
+    try {
+      await db.collection('devices').doc(deviceId).set({
+        ...status,
+        'lastSeen': FieldValue.serverTimestamp(),
+      }, SetOptions(merge: true));
+    } catch (_) {}
+  }
+
+  Future<List<Map<String, dynamic>>> getAllDevicesStatus() async {
+    final db = _db;
+    if (db == null) return [];
+    try {
+      final snapshot = await db.collection('devices').get();
+      return snapshot.docs.map((doc) => {
+        'id': doc.id,
+        ...doc.data(),
+      }).toList();
+    } catch (_) {
+      return [];
+    }
+  }
 }

@@ -9,6 +9,7 @@ import '../services/connectivity_service.dart';
 import '../widgets/glass_container.dart';
 import '../services/biometric_service.dart';
 import '../widgets/smooth_route.dart';
+import 'sync_center_screen.dart';
 import 'add_order_screen.dart';
 
 class OrderListScreen extends StatelessWidget {
@@ -215,7 +216,26 @@ class _SettingsSheetState extends State<_SettingsSheet> {
             )
           else
             Text('Biometric authentication is not supported on this device.', style: GoogleFonts.outfit(color: Colors.white38, fontSize: 14)),
-          const SizedBox(height: 10),
+          
+          const Divider(color: Colors.white10, height: 32),
+          
+          ListTile(
+            onTap: () {
+              Navigator.pop(context); // Close sheet
+              Navigator.push(context, SmoothPageRoute(child: const SyncCenterScreen()));
+            },
+            contentPadding: EdgeInsets.zero,
+            leading: Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(color: Colors.purpleAccent.withOpacity(0.1), borderRadius: BorderRadius.circular(12)),
+              child: const Icon(Icons.sync_rounded, color: Colors.purpleAccent, size: 20),
+            ),
+            title: Text('Sync Center', style: GoogleFonts.outfit(color: Colors.white, fontWeight: FontWeight.w600)),
+            subtitle: Text('Manage multi-device cloud backup', style: GoogleFonts.outfit(color: Colors.white38, fontSize: 12)),
+            trailing: const Icon(Icons.arrow_forward_ios_rounded, color: Colors.white24, size: 14),
+          ),
+
+          const SizedBox(height: 20),
           Center(
             child: TextButton(
               onPressed: () => Navigator.pop(context),

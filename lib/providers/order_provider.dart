@@ -14,6 +14,7 @@ class OrderProvider with ChangeNotifier {
   Map<String, List<String>> _productBases = {};
   String _searchQuery = '';
   bool _isSyncing = false;
+  SyncMetrics _syncMetrics = SyncMetrics();
   NetworkStatus _networkStatus = NetworkStatus.offline;
   String deviceId;
 
@@ -30,9 +31,11 @@ class OrderProvider with ChangeNotifier {
 
   // ─── Getters ─────────────────────────────────────────────────────────────
   bool get isSyncing => _isSyncing;
+  SyncMetrics get syncMetrics => _syncMetrics;
   NetworkStatus get networkStatus => _networkStatus;
   List<String> get products => _products;
   Map<String, List<String>> get productBases => _productBases;
+  Stream<SyncMetrics> get detailedSyncStream => _syncService.detailedStatusStream;
 
   List<PaintOrder> get orders {
     if (_searchQuery.isEmpty) return _allOrders;
@@ -51,6 +54,11 @@ class OrderProvider with ChangeNotifier {
     _syncService.syncStatusStream.listen((syncing) {
       _isSyncing = syncing;
       if (!syncing) _loadAll();
+      notifyListeners();
+    });
+
+    _syncService.detailedStatusStream.listen((metrics) {
+      _syncMetrics = metrics;
       notifyListeners();
     });
 
@@ -79,43 +87,43 @@ class OrderProvider with ChangeNotifier {
     await _localDb.saveOrder(order);
     await _localDb.addProduct(order.product);
     _loadAll();
-    _syncService.syncData(); // Fire and forget
+    _syncService.syncData(deviceId: deviceId); // Fire and forget
   }
 
   Future<void> deleteOrder(String id) async {
     await _localDb.deleteOrder(id);
     _loadAll();
-    _syncService.syncData(); // Propagate delete to cloud
+    _syncService.syncData(deviceId: deviceId); // Propagate delete to cloud
   }
 
   Future<void> addProduct(String name) async {
     await _localDb.addProduct(name);
     _loadAll();
-    _syncService.syncData();
+    _syncService.syncData(deviceId: deviceId);
   }
 
   Future<void> deleteProduct(String name) async {
     await _localDb.deleteProduct(name);
     _loadAll();
-    _syncService.syncData();
+    _syncService.syncData(deviceId: deviceId);
   }
 
   Future<void> addBaseToProduct(String product, String base) async {
     await _localDb.addBaseToProduct(product, base);
     _loadAll();
-    _syncService.syncData();
+    _syncService.syncData(deviceId: deviceId);
   }
 
   Future<void> deleteBaseFromProduct(String product, String base) async {
     await _localDb.deleteBaseFromProduct(product, base);
     _loadAll();
-    _syncService.syncData();
+    _syncService.syncData(deviceId: deviceId);
   }
 
-  Future<void> refresh() async {
+  Future<void> refresh({bool isFullSync = false}) async {
     _isSyncing = true;
     notifyListeners();
-    await _syncService.syncData();
+    await _syncService.syncData(isFullSync: isFullSync, deviceId: deviceId);
     _loadAll();
     _isSyncing = false;
     notifyListeners();
