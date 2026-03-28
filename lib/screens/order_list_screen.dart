@@ -34,13 +34,13 @@ class OrderListScreen extends StatelessWidget {
             child: Stack(
               children: [
                 Positioned(top: -150, left: -100,
-                  child: _glow(450, Colors.cyanAccent.withOpacity(0.12))),
+                  child: _glow(450, Colors.cyanAccent.withValues(alpha: 0.12))),
                 Positioned(bottom: -150, right: -100,
-                  child: _glow(500, Colors.purpleAccent.withOpacity(0.1))),
+                  child: _glow(500, Colors.purpleAccent.withValues(alpha: 0.1))),
                 Positioned(top: 200, right: -100,
-                  child: _glow(350, Colors.blueAccent.withOpacity(0.08))),
+                  child: _glow(350, Colors.blueAccent.withValues(alpha: 0.08))),
                 Positioned(bottom: 250, left: -80,
-                  child: _glow(280, Colors.tealAccent.withOpacity(0.06))),
+                  child: _glow(280, Colors.tealAccent.withValues(alpha: 0.06))),
               ],
             ),
           ),
@@ -59,7 +59,7 @@ class OrderListScreen extends StatelessWidget {
       floatingActionButton: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
-          boxShadow: [BoxShadow(color: Colors.cyanAccent.withOpacity(0.25), blurRadius: 20, spreadRadius: -5)],
+          boxShadow: [BoxShadow(color: Colors.cyanAccent.withValues(alpha: 0.25), blurRadius: 20, spreadRadius: -5)],
         ),
         child: FloatingActionButton.extended(
           onPressed: () => Navigator.push(
@@ -70,7 +70,7 @@ class OrderListScreen extends StatelessWidget {
           label: Text('New Order', style: GoogleFonts.outfit(fontWeight: FontWeight.bold, letterSpacing: 0.5)),
           elevation: 0,
         ).animate(onPlay: (c) => c.repeat(reverse: true))
-         .shimmer(duration: 3.seconds, color: Colors.white.withOpacity(0.25))
+         .shimmer(duration: 3.seconds, color: Colors.white.withValues(alpha: 0.25))
          .boxShadow(begin: const BoxShadow(blurRadius: 10, color: Colors.cyanAccent), end: const BoxShadow(blurRadius: 25, color: Colors.cyanAccent)),
       ),
     );
@@ -96,7 +96,7 @@ class _TopBar extends StatelessWidget {
         Container(
           width: 50, height: 50,
           clipBehavior: Clip.hardEdge,
-          decoration: BoxDecoration(shape: BoxShape.circle, border: Border.all(color: Colors.cyanAccent.withOpacity(0.2))),
+          decoration: BoxDecoration(shape: BoxShape.circle, border: Border.all(color: Colors.cyanAccent.withValues(alpha: 0.2))),
           child: Image.asset('assets/logo.png', fit: BoxFit.cover),
         ),
         const SizedBox(width: 14),
@@ -113,14 +113,14 @@ class _TopBar extends StatelessWidget {
                   shape: BoxShape.circle,
                   color: syncing ? Colors.yellowAccent : (isOnline ? Colors.greenAccent : Colors.redAccent),
                   boxShadow: [BoxShadow(
-                    color: (syncing ? Colors.yellowAccent : (isOnline ? Colors.greenAccent : Colors.redAccent)).withOpacity(0.6),
+                    color: (syncing ? Colors.yellowAccent : (isOnline ? Colors.greenAccent : Colors.redAccent)).withValues(alpha: 0.6),
                     blurRadius: 8,
                   )],
                 ),
               ),
               const SizedBox(width: 6),
               Flexible(
-                child: Text(syncing ? 'Syncing…' : (isOnline ? 'Active Online' : 'Offline Mode'),
+                child: Text(syncing ? 'Syncingâ€¦' : (isOnline ? 'Active Online' : 'Offline Mode'),
                   overflow: TextOverflow.ellipsis,
                   style: GoogleFonts.outfit(fontSize: 12, color: Colors.white38, fontWeight: FontWeight.w500)),
               ),
@@ -207,7 +207,7 @@ class _SettingsSheetState extends State<_SettingsSheet> {
               subtitle: Text('Unlock app using fingerprint/face', style: GoogleFonts.outfit(color: Colors.white38, fontSize: 12)),
               trailing: Switch(
                 value: _biometricEnabled,
-                activeColor: Colors.cyanAccent,
+                activeThumbColor: Colors.cyanAccent,
                 onChanged: (val) async {
                   await _biometricService.setEnabled(val);
                   setState(() => _biometricEnabled = val);
@@ -227,7 +227,7 @@ class _SettingsSheetState extends State<_SettingsSheet> {
             contentPadding: EdgeInsets.zero,
             leading: Container(
               padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(color: Colors.purpleAccent.withOpacity(0.1), borderRadius: BorderRadius.circular(12)),
+              decoration: BoxDecoration(color: Colors.purpleAccent.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(12)),
               child: const Icon(Icons.sync_rounded, color: Colors.purpleAccent, size: 20),
             ),
             title: Text('Sync Center', style: GoogleFonts.outfit(color: Colors.white, fontWeight: FontWeight.w600)),
@@ -263,7 +263,7 @@ class _SearchBar extends StatelessWidget {
             border: InputBorder.none,
             hintText: 'Search orders, codes, products...',
             hintStyle: GoogleFonts.outfit(color: Colors.white24, fontSize: 14),
-            prefixIcon: Icon(Icons.search_rounded, color: Colors.cyanAccent.withOpacity(0.4), size: 20),
+            prefixIcon: Icon(Icons.search_rounded, color: Colors.cyanAccent.withValues(alpha: 0.4), size: 20),
           ),
         ),
       ),
@@ -306,23 +306,23 @@ class _OrderTile extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             decoration: BoxDecoration(
-              color: Colors.cyanAccent.withOpacity(0.12),
+              color: Colors.cyanAccent.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: Colors.cyanAccent.withOpacity(0.1)),
+              border: Border.all(color: Colors.cyanAccent.withValues(alpha: 0.1)),
             ),
             child: Text(order.canSize,
               style: GoogleFonts.outfit(fontSize: 13, color: Colors.cyanAccent, fontWeight: FontWeight.w800)),
           ),
           const SizedBox(width: 16),
           Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(order.product,
-              style: GoogleFonts.outfit(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.white, letterSpacing: 0.2)),
-            const SizedBox(height: 2),
+            Text(order.colorCode,
+              style: GoogleFonts.outfit(fontWeight: FontWeight.w900, fontSize: 18, color: Colors.white, letterSpacing: 0.5)),
+            const SizedBox(height: 1),
             Row(children: [
-              Text(order.colorCode, style: GoogleFonts.outfit(fontSize: 12, color: Colors.white54, fontWeight: FontWeight.w500)),
+              Text(order.product, style: GoogleFonts.outfit(fontSize: 14, color: Colors.white38, fontWeight: FontWeight.w400)),
               if (order.base.isNotEmpty) ...[
-                Text('  ·  ', style: GoogleFonts.outfit(color: Colors.white12)),
-                Text(order.base, style: GoogleFonts.outfit(fontSize: 12, color: Colors.white38)),
+                Text('  -  ', style: GoogleFonts.outfit(color: Colors.white10, fontSize: 13)),
+                Text(order.base, style: GoogleFonts.outfit(fontSize: 14, color: Colors.white24)),
               ],
             ]),
           ])),
@@ -331,7 +331,7 @@ class _OrderTile extends StatelessWidget {
               style: GoogleFonts.outfit(fontSize: 20, fontWeight: FontWeight.w900, color: Colors.cyanAccent, letterSpacing: -0.5)),
             const SizedBox(height: 4),
             Icon(order.isSynced ? Icons.cloud_done_rounded : Icons.cloud_off_rounded,
-              size: 14, color: order.isSynced ? Colors.greenAccent.withOpacity(0.5) : Colors.orangeAccent.withOpacity(0.4)),
+              size: 14, color: order.isSynced ? Colors.greenAccent.withValues(alpha: 0.5) : Colors.orangeAccent.withValues(alpha: 0.4)),
           ]),
         ]),
       ),
@@ -467,8 +467,14 @@ class _OrderDetailSheetState extends State<_OrderDetailSheet> {
               Expanded(child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(widget.order.product, style: GoogleFonts.outfit(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.cyanAccent)),
-                  Text(widget.order.colorCode, style: GoogleFonts.outfit(fontSize: 14, color: Colors.white60)),
+                  Text(widget.order.colorCode, style: GoogleFonts.outfit(fontSize: 28, fontWeight: FontWeight.w900, color: Colors.cyanAccent)),
+                  Row(children: [
+                    Text(widget.order.product, style: GoogleFonts.outfit(fontSize: 18, color: Colors.white38, fontWeight: FontWeight.w500)),
+                    if (widget.order.base.isNotEmpty) ...[
+                      Text('  -  ', style: GoogleFonts.outfit(color: Colors.white12, fontSize: 16)),
+                      Text(widget.order.base, style: GoogleFonts.outfit(fontSize: 18, color: Colors.white24)),
+                    ],
+                  ]),
                 ],
               )),
               _actionBtn(
@@ -507,15 +513,15 @@ class _OrderDetailSheetState extends State<_OrderDetailSheet> {
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: Colors.cyanAccent.withOpacity(0.08),
+                color: Colors.cyanAccent.withValues(alpha: 0.08),
                 borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: Colors.cyanAccent.withOpacity(0.2)),
+                border: Border.all(color: Colors.cyanAccent.withValues(alpha: 0.2)),
               ),
               child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   Text('TOTAL ESTIMATE', style: GoogleFonts.outfit(color: Colors.cyanAccent, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 1)),
                   const SizedBox(height: 4),
-                  Text('${_editLiters}L × ${_qtyCtrl.text} × ₹${_priceCtrl.text}', style: GoogleFonts.outfit(color: Colors.white38, fontSize: 12)),
+                  Text('${_editLiters}L x ${_qtyCtrl.text} x ₹${_priceCtrl.text}', style: GoogleFonts.outfit(color: Colors.white38, fontSize: 12)),
                 ]),
                 Text('₹${_calcTotal.toStringAsFixed(2)}', style: GoogleFonts.outfit(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.cyanAccent)),
               ]),
@@ -538,7 +544,7 @@ class _OrderDetailSheetState extends State<_OrderDetailSheet> {
           child: Icon(icon, color: color, size: 20),
         ),
         const SizedBox(height: 4),
-        Text(label, style: GoogleFonts.outfit(fontSize: 10, color: color.withOpacity(0.8), fontWeight: FontWeight.bold)),
+        Text(label, style: GoogleFonts.outfit(fontSize: 10, color: color.withValues(alpha: 0.8), fontWeight: FontWeight.bold)),
       ]),
     );
   }
@@ -559,7 +565,7 @@ class _OrderDetailSheetState extends State<_OrderDetailSheet> {
       style: GoogleFonts.outfit(color: Colors.white, fontSize: 15),
       decoration: InputDecoration(
         border: InputBorder.none,
-        prefixIcon: Icon(icon, color: Colors.cyanAccent.withOpacity(0.5), size: 16),
+        prefixIcon: Icon(icon, color: Colors.cyanAccent.withValues(alpha: 0.5), size: 16),
         prefixIconConstraints: const BoxConstraints(minWidth: 30),
       ),
     ));

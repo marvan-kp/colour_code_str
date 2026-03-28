@@ -63,6 +63,7 @@ class _PinLockScreenState extends State<PinLockScreen> {
         } else {
           Future.delayed(const Duration(milliseconds: 300), () {
             setState(() => _input = '');
+            if (!mounted) return;
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text('Incorrect PIN'), backgroundColor: Colors.redAccent),
             );
@@ -81,8 +82,8 @@ class _PinLockScreenState extends State<PinLockScreen> {
         children: [
           // Background
           Container(color: const Color(0xFF050B0E)),
-          Positioned(top: -100, right: -100, child: _glow(400, Colors.cyanAccent.withOpacity(0.1))),
-          Positioned(bottom: -100, left: -100, child: _glow(400, Colors.purpleAccent.withOpacity(0.1))),
+          Positioned(top: -100, right: -100, child: _glow(400, Colors.cyanAccent.withValues(alpha: 0.1))),
+          Positioned(bottom: -100, left: -100, child: _glow(400, Colors.purpleAccent.withValues(alpha: 0.1))),
 
           Center(
             child: Column(

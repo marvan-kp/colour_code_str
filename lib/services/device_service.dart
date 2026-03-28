@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:uuid/uuid.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -22,7 +23,7 @@ class DeviceService {
         id = iosInfo.identifierForVendor; // Unique ID on iOS
       }
     } catch (e) {
-      print('Failed to get hardware device ID: $e');
+      debugPrint('Failed to get hardware device ID: $e');
     }
 
     // Fallback to UUID if hardware ID fails

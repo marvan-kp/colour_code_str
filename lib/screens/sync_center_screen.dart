@@ -1,5 +1,4 @@
-import 'dart:ui';
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -95,7 +94,7 @@ class _SyncCenterScreenState extends State<SyncCenterScreen> {
                   foregroundColor: Colors.black,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                   elevation: 10,
-                  shadowColor: Colors.cyanAccent.withOpacity(0.4),
+                  shadowColor: Colors.cyanAccent.withValues(alpha: 0.4),
                 ),
               ),
             ),
@@ -116,7 +115,7 @@ class _SyncCenterScreenState extends State<SyncCenterScreen> {
       Text('Sync Center', style: GoogleFonts.outfit(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white)),
       const Spacer(),
       IconButton(
-        icon: Icon(Icons.refresh_rounded, color: Colors.cyanAccent.withOpacity(0.6)),
+        icon: Icon(Icons.refresh_rounded, color: Colors.cyanAccent.withValues(alpha: 0.6)),
         onPressed: _fetchDevices,
       ),
     ]),
@@ -146,7 +145,7 @@ class _SyncCenterScreenState extends State<SyncCenterScreen> {
                   Text(provider.deviceId.substring(0, 8).toUpperCase(), style: GoogleFonts.outfit(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
                 ],
               ),
-              Icon(Icons.smartphone_rounded, color: Colors.white.withOpacity(0.2), size: 40),
+              Icon(Icons.smartphone_rounded, color: Colors.white.withValues(alpha: 0.2), size: 40),
             ],
           ),
           const SizedBox(height: 24),
@@ -161,12 +160,12 @@ class _SyncCenterScreenState extends State<SyncCenterScreen> {
             const SizedBox(height: 16),
             Container(
               padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(color: Colors.redAccent.withOpacity(0.1), borderRadius: BorderRadius.circular(12)),
+              decoration: BoxDecoration(color: Colors.redAccent.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(12)),
               child: Row(
                 children: [
                   const Icon(Icons.error_outline_rounded, color: Colors.redAccent, size: 16),
                   const SizedBox(width: 8),
-                  Expanded(child: Text(metrics.lastError!, style: GoogleFonts.outfit(color: Colors.redAccent.withOpacity(0.8), fontSize: 11))),
+                  Expanded(child: Text(metrics.lastError!, style: GoogleFonts.outfit(color: Colors.redAccent.withValues(alpha: 0.8), fontSize: 11))),
                 ],
               ),
             ),
@@ -182,7 +181,7 @@ class _SyncCenterScreenState extends State<SyncCenterScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(children: [
-            Icon(icon, size: 14, color: color.withOpacity(0.7)),
+            Icon(icon, size: 14, color: color.withValues(alpha: 0.7)),
             const SizedBox(width: 6),
             Text(label, style: GoogleFonts.outfit(color: Colors.white38, fontSize: 12)),
           ]),
@@ -198,9 +197,9 @@ class _SyncCenterScreenState extends State<SyncCenterScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
       decoration: BoxDecoration(
-        color: (isOnline ? Colors.greenAccent : Colors.redAccent).withOpacity(0.05),
+        color: (isOnline ? Colors.greenAccent : Colors.redAccent).withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: (isOnline ? Colors.greenAccent : Colors.redAccent).withOpacity(0.2)),
+        border: Border.all(color: (isOnline ? Colors.greenAccent : Colors.redAccent).withValues(alpha: 0.2)),
       ),
       child: Row(
         children: [
@@ -259,15 +258,15 @@ class _SyncCenterScreenState extends State<SyncCenterScreen> {
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.04),
+        color: Colors.white.withValues(alpha: 0.04),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.white.withOpacity(0.05)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
       ),
       child: Row(
         children: [
           Container(
             padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(color: Colors.cyanAccent.withOpacity(0.1), borderRadius: BorderRadius.circular(12)),
+            decoration: BoxDecoration(color: Colors.cyanAccent.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(12)),
             child: Icon(Icons.computer_rounded, color: Colors.cyanAccent, size: 20),
           ),
           const SizedBox(width: 16),
@@ -288,7 +287,7 @@ class _SyncCenterScreenState extends State<SyncCenterScreen> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                 decoration: BoxDecoration(
-                  color: (isRecent ? Colors.greenAccent : Colors.white12).withOpacity(0.1),
+                  color: (isRecent ? Colors.greenAccent : Colors.white12).withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: Text(isRecent ? 'ONLINE' : 'AWAY', 

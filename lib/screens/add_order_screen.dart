@@ -1,6 +1,5 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -68,7 +67,7 @@ class _AddOrderScreenState extends State<AddOrderScreen> {
     if (!_formKey.currentState!.validate()) return;
     if (_effectiveProduct.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(backgroundColor: Colors.orange.withOpacity(0.9), content: Text('Select or add a product', style: GoogleFonts.outfit())),
+        SnackBar(backgroundColor: Colors.orange.withValues(alpha: 0.9), content: Text('Select or add a product', style: GoogleFonts.outfit())),
       );
       return;
     }
@@ -84,7 +83,7 @@ class _AddOrderScreenState extends State<AddOrderScreen> {
 
     if (isDuplicate) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(backgroundColor: Colors.redAccent.withOpacity(0.9), content: Text('Order with this Product and Color Code is already stored!', style: GoogleFonts.outfit())),
+        SnackBar(backgroundColor: Colors.redAccent.withValues(alpha: 0.9), content: Text('Order with this Product and Color Code is already stored!', style: GoogleFonts.outfit())),
       );
       return;
     }
@@ -119,6 +118,7 @@ class _AddOrderScreenState extends State<AddOrderScreen> {
       isSynced: false,
     ));
 
+    if (!mounted) return;
     Navigator.pop(context);
   }
 
@@ -149,7 +149,7 @@ class _AddOrderScreenState extends State<AddOrderScreen> {
   void _showBaseSearch(BuildContext context) {
     if (_selectedProduct.isEmpty && !_isCustomProduct) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(backgroundColor: Colors.orange.withOpacity(0.9), content: Text('Select a product first', style: GoogleFonts.outfit())),
+        SnackBar(backgroundColor: Colors.orange.withValues(alpha: 0.9), content: Text('Select a product first', style: GoogleFonts.outfit())),
       );
       return;
     }
@@ -199,11 +199,11 @@ class _AddOrderScreenState extends State<AddOrderScreen> {
             child: Stack(
               children: [
                 Positioned(top: -100, right: -120,
-                  child: _glow(400, Colors.cyanAccent.withOpacity(0.12))),
+                  child: _glow(400, Colors.cyanAccent.withValues(alpha: 0.12))),
                 Positioned(bottom: -150, left: -100,
-                  child: _glow(450, Colors.purpleAccent.withOpacity(0.1))),
+                  child: _glow(450, Colors.purpleAccent.withValues(alpha: 0.1))),
                 Positioned(top: 300, left: -70,
-                  child: _glow(250, Colors.blueAccent.withOpacity(0.06))),
+                  child: _glow(250, Colors.blueAccent.withValues(alpha: 0.06))),
               ],
             ),
           ),
@@ -222,7 +222,49 @@ class _AddOrderScreenState extends State<AddOrderScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // ── Product Selection ───────────────────────────────
+                          // â”€â”€ Color & Base â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+                          _section('Order Details', Icons.tune_rounded, child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                            _inputField(controller: _colorController, label: 'Color Code', hint: 'e.g. ff90',
+                              icon: Icons.palette_rounded,
+                              validator: (v) => (v == null || v.trim().isEmpty) ? 'Required' : null),
+                            const SizedBox(height: 18),
+                            
+                            GestureDetector(
+                              onTap: () => _showBaseSearch(context),
+                              child: GlassContainer(
+                                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                                borderRadius: 16, opacity: 0.05,
+                                child: Row(children: [
+                                  Icon(Icons.layers_rounded, color: Colors.cyanAccent.withValues(alpha: 0.6), size: 20),
+                                  const SizedBox(width: 12),
+                                  Expanded(child: Text(
+                                    _isCustomBase ? 'Custom Base' : (_selectedBase.isEmpty ? 'Tap to Select Base Info...' : _selectedBase),
+                                    style: GoogleFonts.outfit(
+                                      color: _selectedBase.isEmpty && !_isCustomBase ? Colors.white30 : Colors.white,
+                                      fontSize: 16,
+                                      fontWeight: _selectedBase.isNotEmpty ? FontWeight.bold : FontWeight.normal,
+                                    ),
+                                  )),
+                                  const Icon(Icons.arrow_forward_ios_rounded, color: Colors.white24, size: 14),
+                                ]),
+                              ),
+                            ),
+                            if (_isCustomBase) ...[
+                              const SizedBox(height: 16),
+                              _inputField(
+                                controller: _customBaseController,
+                                label: 'Enter New Base Info',
+                                hint: 'e.g. AB1',
+                                icon: Icons.add_circle_outline_rounded,
+                                iconColor: Colors.orangeAccent,
+                                required: false,
+                              ),
+                            ],
+                          ])),
+
+                          const SizedBox(height: 18),
+
+                          // â”€â”€ Product Selection â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
                           _section('Product Selection', Icons.brush_rounded, child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -232,7 +274,7 @@ class _AddOrderScreenState extends State<AddOrderScreen> {
                                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                                   borderRadius: 16, opacity: 0.06,
                                   child: Row(children: [
-                                    Icon(Icons.search_rounded, color: Colors.cyanAccent.withOpacity(0.6), size: 20),
+                                    Icon(Icons.search_rounded, color: Colors.cyanAccent.withValues(alpha: 0.6), size: 20),
                                     const SizedBox(width: 12),
                                     Expanded(child: Text(
                                       _isCustomProduct ? 'Custom Product' : (_selectedProduct.isEmpty ? 'Tap to Search Products...' : _selectedProduct),
@@ -262,49 +304,7 @@ class _AddOrderScreenState extends State<AddOrderScreen> {
 
                           const SizedBox(height: 18),
 
-                          // ── Color & Base ─────────────────────────────────
-                          _section('Order Details', Icons.tune_rounded, child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                            _inputField(controller: _colorController, label: 'Color Code', hint: 'e.g. ff90',
-                              icon: Icons.palette_rounded,
-                              validator: (v) => (v == null || v.trim().isEmpty) ? 'Required' : null),
-                            const SizedBox(height: 18),
-                            
-                            GestureDetector(
-                              onTap: () => _showBaseSearch(context),
-                              child: GlassContainer(
-                                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                                borderRadius: 16, opacity: 0.05,
-                                child: Row(children: [
-                                  Icon(Icons.layers_rounded, color: Colors.cyanAccent.withOpacity(0.6), size: 20),
-                                  const SizedBox(width: 12),
-                                  Expanded(child: Text(
-                                    _isCustomBase ? 'Custom Base' : (_selectedBase.isEmpty ? 'Tap to Select Base Info...' : _selectedBase),
-                                    style: GoogleFonts.outfit(
-                                      color: _selectedBase.isEmpty && !_isCustomBase ? Colors.white30 : Colors.white,
-                                      fontSize: 16,
-                                      fontWeight: _selectedBase.isNotEmpty ? FontWeight.bold : FontWeight.normal,
-                                    ),
-                                  )),
-                                  const Icon(Icons.arrow_forward_ios_rounded, color: Colors.white24, size: 14),
-                                ]),
-                              ),
-                            ),
-                            if (_isCustomBase) ...[
-                              const SizedBox(height: 16),
-                              _inputField(
-                                controller: _customBaseController,
-                                label: 'Enter New Base Info',
-                                hint: 'e.g. AB1',
-                                icon: Icons.add_circle_outline_rounded,
-                                iconColor: Colors.orangeAccent,
-                                required: false,
-                              ),
-                            ],
-                          ])),
-
-                          const SizedBox(height: 18),
-
-                          // ── Volume & Pricing ──────────────────────────────
+                          // â”€â”€ Volume & Pricing â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
                           _section('Volume & Price', Icons.analytics_rounded, child: Column(children: [
                             DropdownButtonHideUnderline(
                               child: DropdownButton<int>(
@@ -334,14 +334,14 @@ class _AddOrderScreenState extends State<AddOrderScreen> {
 
                           const SizedBox(height: 24),
 
-                          // ── Final Estimate ────────────────────────────────
+                          // -- Volume & Pricing ------------------------------
                           Container(
                             padding: const EdgeInsets.all(22),
                             decoration: BoxDecoration(
-                              color: Colors.cyanAccent.withOpacity(0.08),
+                              color: Colors.cyanAccent.withValues(alpha: 0.08),
                               borderRadius: BorderRadius.circular(24),
-                              border: Border.all(color: Colors.cyanAccent.withOpacity(0.2)),
-                              boxShadow: [BoxShadow(color: Colors.cyanAccent.withOpacity(0.05), blurRadius: 20, spreadRadius: 2)],
+                              border: Border.all(color: Colors.cyanAccent.withValues(alpha: 0.2)),
+                              boxShadow: [BoxShadow(color: Colors.cyanAccent.withValues(alpha: 0.05), blurRadius: 20, spreadRadius: 2)],
                             ),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -349,7 +349,7 @@ class _AddOrderScreenState extends State<AddOrderScreen> {
                                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                                   Text('TOTAL ESTIMATE', style: GoogleFonts.outfit(color: Colors.cyanAccent, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 1.2)),
                                   const SizedBox(height: 4),
-                                  Text('${_selectedLiters}L × ${_qtyController.text} × ₹${_priceController.text}', style: GoogleFonts.outfit(color: Colors.white24, fontSize: 12)),
+                                  Text('${_selectedLiters}L x ${_qtyController.text} x ₹${_priceController.text}', style: GoogleFonts.outfit(color: Colors.white24, fontSize: 12)),
                                 ]),
                                 Text('₹${_totalCost.toStringAsFixed(2)}', style: GoogleFonts.outfit(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.cyanAccent)),
                               ],
@@ -357,7 +357,7 @@ class _AddOrderScreenState extends State<AddOrderScreen> {
                           ).animate()
                            .fadeIn(delay: 600.ms, duration: 600.ms)
                            .slideY(begin: 0.2, end: 0, curve: Curves.easeOutCubic)
-                           .shimmer(delay: 2.seconds, duration: 2.seconds, color: Colors.cyanAccent.withOpacity(0.1)),
+                           .shimmer(delay: 2.seconds, duration: 2.seconds, color: Colors.cyanAccent.withValues(alpha: 0.1)),
                           
                           const SizedBox(height: 30),
 
@@ -379,14 +379,14 @@ class _AddOrderScreenState extends State<AddOrderScreen> {
                     ),
                   ),
                 ),
-                ],
-              ),
+              ],
             ),
           ),
-        ],
-      ),
-    );
-  }
+        ),
+      ],
+    ),
+  );
+}
 
   Widget _appBar() => Padding(
     padding: const EdgeInsets.fromLTRB(8, 10, 16, 10),
@@ -413,7 +413,7 @@ class _AddOrderScreenState extends State<AddOrderScreen> {
         Padding(
           padding: const EdgeInsets.only(left: 4, bottom: 10),
           child: Row(children: [
-            Icon(icon, size: 16, color: Colors.cyanAccent.withOpacity(0.8)),
+            Icon(icon, size: 16, color: Colors.cyanAccent.withValues(alpha: 0.8)),
             const SizedBox(width: 8),
             Text(title.toUpperCase(), style: GoogleFonts.outfit(color: Colors.white38, fontSize: 11, fontWeight: FontWeight.bold, letterSpacing: 1.5)),
           ]),
@@ -430,16 +430,16 @@ class _AddOrderScreenState extends State<AddOrderScreen> {
       decoration: InputDecoration(
         labelText: label, labelStyle: GoogleFonts.outfit(color: Colors.white38, fontSize: 13),
         hintText: hint, hintStyle: GoogleFonts.outfit(color: Colors.white24, fontSize: 13),
-        prefixIcon: Icon(icon, color: iconColor.withOpacity(0.7), size: 18),
-        enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white.withOpacity(0.1))),
-        focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: iconColor.withOpacity(0.5))),
+        prefixIcon: Icon(icon, color: iconColor.withValues(alpha: 0.7), size: 18),
+        enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.1))),
+        focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: iconColor.withValues(alpha: 0.5))),
       ),
       validator: validator,
     );
   }
 }
 
-// ── Generic Searchable Modal ──────────────────────────────────────────────
+// â”€â”€ Generic Searchable Modal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 class _SearchSheet extends StatefulWidget {
   final String title;
   final String hintText;
@@ -483,7 +483,7 @@ class _SearchSheetState extends State<_SearchSheet> {
                 hintStyle: GoogleFonts.outfit(color: Colors.white24),
                 prefixIcon: const Icon(Icons.search_rounded, color: Colors.cyanAccent),
                 filled: true,
-                fillColor: Colors.white.withOpacity(0.05),
+                fillColor: Colors.white.withValues(alpha: 0.05),
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide.none),
               ),
             ),

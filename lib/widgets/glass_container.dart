@@ -1,4 +1,4 @@
-import 'dart:ui';
+﻿import 'dart:ui';
 import 'package:flutter/material.dart';
 
 /// Fast GlassContainer - uses blur only when explicitly needed (modals)
@@ -29,24 +29,24 @@ class GlassContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     final decoration = BoxDecoration(
       borderRadius: BorderRadius.circular(borderRadius),
-      color: (tint ?? Colors.white).withOpacity(opacity),
+      color: (tint ?? Colors.white).withValues(alpha: opacity),
       // Glass Edge Highlights
       border: Border.all(
-        color: Colors.white.withOpacity(0.18),
+        color: Colors.white.withValues(alpha: 0.18),
         width: 1.0,
       ),
       gradient: LinearGradient(
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
         colors: [
-          (tint ?? Colors.white).withOpacity(opacity + 0.06),
-          (tint ?? Colors.white).withOpacity(opacity - 0.02),
+          (tint ?? Colors.white).withValues(alpha: opacity + 0.06),
+          (tint ?? Colors.white).withValues(alpha: opacity - 0.02),
         ],
         stops: const [0.0, 1.0],
       ),
       boxShadow: [
         BoxShadow(
-          color: Colors.black.withOpacity(0.35),
+          color: Colors.black.withValues(alpha: 0.35),
           blurRadius: 20,
           offset: const Offset(0, 10),
           spreadRadius: -5,

@@ -96,13 +96,13 @@ class PaintShopApp extends StatelessWidget {
           iconTheme: const IconThemeData(color: Colors.white),
         ),
         chipTheme: ChipThemeData(
-          backgroundColor: Colors.white.withOpacity(0.06),
+          backgroundColor: Colors.white.withValues(alpha: 0.06),
           labelStyle: GoogleFonts.outfit(color: Colors.white),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         ),
         inputDecorationTheme: InputDecorationTheme(
           labelStyle: const TextStyle(color: Colors.white54),
-          hintStyle: TextStyle(color: Colors.white.withOpacity(0.25)),
+          hintStyle: TextStyle(color: Colors.white.withValues(alpha: 0.25)),
         ),
         pageTransitionsTheme: const PageTransitionsTheme(
           builders: {
